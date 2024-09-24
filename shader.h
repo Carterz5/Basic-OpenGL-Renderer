@@ -1,3 +1,5 @@
+#ifndef SHADER_H
+#define SHADER_H
 #include <string.h>
 #include <stdbool.h>
 #include <stdio.h>
@@ -30,3 +32,5 @@ int SH_GetUniformLocation(Shader* shader, char* name);
 unsigned int SH_CreateShader(const char* vertexShader, const char* fragmentShader);
 unsigned int SH_CompileShader(unsigned int type, const char* source);
 ShaderProgramSource SH_ParseShader(const char* filepath);
+
+#endif

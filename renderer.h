@@ -4,6 +4,11 @@
 #include <signal.h>
 #include <stdbool.h>
 #include "stb_ds.h"
+#include "shader.h"
+#include "indexbuffer.h"
+#include "vertexarray.h"
+#include "vertexbuffer.h"
+#include "vertexbufferlayout.h"
 
 
 
@@ -17,5 +22,7 @@
 void GLClearError();
 bool GLLogCall(const char* function, const char* file, int line);
 
+void R_Draw(VertexArray* va, IndexBuffer* ib, Shader* shader);
+void R_Clear();
 
 #endif

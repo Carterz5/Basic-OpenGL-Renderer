@@ -107,18 +107,12 @@ int main(void)
         lasttime += 1.0/TARGET_FPS;
 
 
-        GLCall(glClear(GL_COLOR_BUFFER_BIT));
+        R_Clear();
 
         SH_Bind(&shader);
         SH_SetUniform4f(&shader, "u_Color", r, 0.3f, 0.8f, 1.0f);
 
-
-
-        
-        VA_Bind(&va);
-        IB_Bind(&ib);
-
-        GLCall(glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, NULL));
+        R_Draw(&va, &ib, &shader);
 
         if (r > 1.0f){
             increment = -0.05f;

@@ -1,6 +1,5 @@
 #ifndef INDEXBUFFER_H
 #define INDEXBUFFER_H
-#include "renderer.h"
 
 
 typedef struct IndexBuffer {

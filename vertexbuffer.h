@@ -1,6 +1,5 @@
 #ifndef VERTEXBUFFER_H
 #define VERTEXBUFFER_H
-#include "renderer.h"
 
 
 typedef struct VertexBuffer {

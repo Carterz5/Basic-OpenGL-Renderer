@@ -1,6 +1,5 @@
 #ifndef VERTEXBUFFERLAYOUT_H
 #define VERTEXBUFFERLAYOUT_H
-#include "renderer.h"
 
 
 typedef struct VertexBufferElement {
