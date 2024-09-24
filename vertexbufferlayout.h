@@ -1,0 +1,28 @@
+#ifndef VERTEXBUFFERLAYOUT_H
+#define VERTEXBUFFERLAYOUT_H
+#include "renderer.h"
+
+
+typedef struct VertexBufferElement {
+    unsigned int type;
+    unsigned int count;
+    unsigned char normalized;
+
+} VertexBufferElement;
+
+typedef struct VertexBufferLayout {
+    //use arrput
+    VertexBufferElement* Elements;
+    unsigned int stride;
+} VertexBufferLayout;
+
+
+void VBL_Pushfloat(unsigned int count, VertexBufferLayout* VBL);
+void VBL_PushUint(unsigned int count, VertexBufferLayout* VBL);
+void VBL_PushUchar(unsigned int count, VertexBufferLayout* VBL);
+unsigned int VBL_GetStride(VertexBufferLayout* VBL);
+const VertexBufferElement* VBL_GetElements(VertexBufferLayout* VBL);
+static unsigned int VBE_GetSizeOfType(unsigned int type);
+void VBL_Construct(VertexBufferLayout* vbl);
+
+#endif
