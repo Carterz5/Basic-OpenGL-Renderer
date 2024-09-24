@@ -1,4 +1,5 @@
 #include "renderer.h"
+#include "vertexarray.h"
 
 
 void VA_Construct(VertexArray* va){
@@ -34,7 +35,7 @@ void VA_Bind(VertexArray* va){
     GLCall(glBindVertexArray(va->RendererID));
 
 };
-const void VA_Unbind(){
+void VA_Unbind(){
 
     GLCall(glBindVertexArray(0));
 

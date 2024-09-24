@@ -1,4 +1,5 @@
 #include "renderer.h"
+#include "vertexbufferlayout.h"
 
 
 unsigned int VBE_GetSizeOfType(unsigned int type){

@@ -17,12 +17,12 @@ typedef struct VertexBufferLayout {
 } VertexBufferLayout;
 
 
+unsigned int VBE_GetSizeOfType(unsigned int type);
 void VBL_Pushfloat(unsigned int count, VertexBufferLayout* VBL);
 void VBL_PushUint(unsigned int count, VertexBufferLayout* VBL);
 void VBL_PushUchar(unsigned int count, VertexBufferLayout* VBL);
 unsigned int VBL_GetStride(VertexBufferLayout* VBL);
-const VertexBufferElement* VBL_GetElements(VertexBufferLayout* VBL);
-static unsigned int VBE_GetSizeOfType(unsigned int type);
+VertexBufferElement* VBL_GetElements(VertexBufferLayout* VBL);
 void VBL_Construct(VertexBufferLayout* vbl);
 
 #endif

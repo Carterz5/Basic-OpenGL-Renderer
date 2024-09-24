@@ -8,6 +8,10 @@
 #include <GLFW/glfw3.h>
 #include "renderer.h"
 #include "shader.h"
+#include "indexbuffer.h"
+#include "vertexarray.h"
+#include "vertexbuffer.h"
+#include "vertexbufferlayout.h"
 
 
 
