@@ -18,6 +18,6 @@ void VB_Bind(VertexBuffer* VertexBuffer){
     GLCall(glBindBuffer(GL_ARRAY_BUFFER, VertexBuffer->RendererID));
 };
 
-const void VB_Unbind(){
+void VB_Unbind(){
     GLCall(glBindBuffer(GL_ARRAY_BUFFER, 0));
 };

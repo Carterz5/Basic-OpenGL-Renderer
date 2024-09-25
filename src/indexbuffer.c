@@ -17,11 +17,11 @@ void IB_Destruct(IndexBuffer* IndexBuffer){
     GLCall(glDeleteBuffers(1, &IndexBuffer->RendererID))
 };
 
-const void IB_Bind(IndexBuffer* IndexBuffer){
+void IB_Bind(IndexBuffer* IndexBuffer){
     GLCall(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, IndexBuffer->RendererID));
 };
 
-const void IB_Unbind(){
+void IB_Unbind(){
     GLCall(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0));
 };
 

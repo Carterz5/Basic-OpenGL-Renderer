@@ -45,7 +45,7 @@ int main(void)
     if (glewInit() != GLEW_OK){
         printf("Error!\n");
     }
-    GLCall(const char *glversion = glGetString(GL_VERSION));
+    GLCall(const unsigned char *glversion = glGetString(GL_VERSION));
     printf("GL version is |%s|\n", glversion);
 
     float positions[] = {
@@ -61,26 +61,26 @@ int main(void)
 
     };
 
-
+    
     VertexArray va;
     VA_Construct(&va);
 
-
+    
     VertexBuffer vb;
     VB_Construct(positions, 4 * 2 * sizeof(float), &vb);
-
+    
     VertexBufferLayout vbl;
     VBL_Construct(&vbl);
     VBL_Pushfloat(2, &vbl);
-
+    
     VA_AddBuffer(&vb, &vbl, &va);
-
+  
 
     IndexBuffer ib;
     IB_Construct(indices, 6, &ib);
 
     Shader shader;
-    SH_Construct(&shader,"./res/shaders/Basic.shader");
+    SH_Construct(&shader,"../res/shaders/Basic.shader");
     SH_Bind(&shader);
 
 
