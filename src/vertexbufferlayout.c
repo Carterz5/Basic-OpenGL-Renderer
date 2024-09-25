@@ -27,9 +27,8 @@ void VBL_Pushfloat(unsigned int count, VertexBufferLayout* VBL){
     vbe.count = count;
     vbe.type = GL_FLOAT;
     vbe.normalized = GL_FALSE;
-    printf("im about to put\n");
+
     arrput(VBL->Elements, vbe);
-    printf("i putted\n");
     VBL->stride += VBE_GetSizeOfType(GL_FLOAT) * count;
     
 }
