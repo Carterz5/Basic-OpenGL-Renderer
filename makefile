@@ -2,7 +2,7 @@
 CC = gcc
 
 # Executable name
-TARGET = bin/a
+TARGET = bin/a.out
 
 # Source and include directories
 SRC_DIR = src
