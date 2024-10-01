@@ -42,6 +42,12 @@ void SH_Unbind(){
 
 };
 
+void SH_SetUniform1i(Shader* shader, char* name, int value){
+
+    GLCall(glUniform1i(SH_GetUniformLocation(shader, name), value));
+
+};
+
 void SH_SetUniform1f(Shader* shader, char* name, float value){
 
     GLCall(glUniform1f(SH_GetUniformLocation(shader, name), value));

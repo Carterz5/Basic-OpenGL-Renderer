@@ -8,9 +8,10 @@ TARGET = bin/a.out
 SRC_DIR = src
 INC_DIR = include
 BUILD_DIR = build
+BIN_DIR = bin
 
 # Source files
-SRCS = $(SRC_DIR)/main.c $(SRC_DIR)/indexbuffer.c $(SRC_DIR)/renderer.c $(SRC_DIR)/shader.c $(SRC_DIR)/vertexarray.c $(SRC_DIR)/vertexbuffer.c $(SRC_DIR)/vertexbufferlayout.c
+SRCS = $(SRC_DIR)/main.c $(SRC_DIR)/indexbuffer.c $(SRC_DIR)/renderer.c $(SRC_DIR)/shader.c $(SRC_DIR)/vertexarray.c $(SRC_DIR)/vertexbuffer.c $(SRC_DIR)/vertexbufferlayout.c $(SRC_DIR)/texture.c $(SRC_DIR)/stb_ds.c $(SRC_DIR)/stb_image.c
 
 # Object files (build directory + source file name with .o extension)
 OBJS = $(SRCS:$(SRC_DIR)/%.c=$(BUILD_DIR)/%.o)
@@ -28,7 +29,7 @@ ifeq ($(OS), Windows_NT)
 else
     # Linux-specific settings
     INCLUDES = -I$(INC_DIR)
-    LIBS = -lGLEW -lglfw -lGL -lGLU -lX11
+    LIBS = -lGLEW -lglfw -lGL -lGLU -lX11 -lm
     LDFLAGS = $(LIBS)
 endif
 
@@ -53,6 +54,10 @@ $(BUILD_DIR):
 # Clean up build files
 clean:
 	rm -f $(BUILD_DIR)/*.o $(TARGET)
+
+# Run the program
+run: $(BIN_DIR)
+	cd $(BIN_DIR) && ./a.out
 
 # Rebuild the project
 rebuild: clean all

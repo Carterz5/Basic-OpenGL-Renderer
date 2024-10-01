@@ -1,4 +1,3 @@
-#define STB_DS_IMPLEMENTATION
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -12,6 +11,7 @@
 #include "vertexarray.h"
 #include "vertexbuffer.h"
 #include "vertexbufferlayout.h"
+#include "texture.h"
 
 
 
@@ -49,10 +49,10 @@ int main(void)
     printf("GL version is |%s|\n", glversion);
 
     float positions[] = {
-        -0.5f, -0.5f,
-         0.5f, -0.5f,
-         0.5f,  0.5f,
-        -0.5f,  0.5f,
+        -0.5f, -0.5f, 0.0f, 0.0f, // 0
+         0.5f, -0.5f, 1.0f, 0.0f, // 1
+         0.5f,  0.5f, 1.0f, 1.0f, // 2
+        -0.5f,  0.5f, 0.0f, 1.0f, // 3
     };
 
     unsigned int indices[] = {
@@ -60,17 +60,19 @@ int main(void)
         2, 3, 0
 
     };
+    GLCall(glEnable(GL_BLEND));
+    GLCall(glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA));
 
-    
     VertexArray va;
     VA_Construct(&va);
 
     
     VertexBuffer vb;
-    VB_Construct(positions, 4 * 2 * sizeof(float), &vb);
+    VB_Construct(positions, 4 * 4 * sizeof(float), &vb);
     
     VertexBufferLayout vbl;
     VBL_Construct(&vbl);
+    VBL_Pushfloat(2, &vbl);
     VBL_Pushfloat(2, &vbl);
     
     VA_AddBuffer(&vb, &vbl, &va);
@@ -82,9 +84,12 @@ int main(void)
     Shader shader;
     SH_Construct(&shader,"../res/shaders/Basic.shader");
     SH_Bind(&shader);
-
-
     SH_SetUniform4f(&shader, "u_Color", 0.2f, 0.3f, 0.8f, 1.0f);
+
+    Texture texture;
+    TX_Construct("../res/textures/C.png", &texture);
+    TX_Bind(0, &texture);
+    SH_SetUniform1i(&shader, "u_Texture", 0);
 
     VA_Unbind(&va);
     SH_Unbind();
@@ -110,7 +115,7 @@ int main(void)
         R_Clear();
 
         SH_Bind(&shader);
-        SH_SetUniform4f(&shader, "u_Color", r, 0.3f, 0.8f, 1.0f);
+        //SH_SetUniform4f(&shader, "u_Color", r, 0.3f, 0.8f, 1.0f);
 
         R_Draw(&va, &ib, &shader);
 
@@ -133,6 +138,7 @@ int main(void)
     IB_Destruct(&ib);
     VB_Destruct(&vb);
     VA_Destruct(&va);
+    TX_Destruct(&texture);
 
     glfwTerminate();
     return 0;

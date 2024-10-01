@@ -27,6 +27,8 @@ void SH_Construct(Shader* shader, char* filepath);
 void SH_Destruct(Shader* shader);
 void SH_Bind(Shader* shader);
 void SH_Unbind();
+void SH_SetUniform1i(Shader* shader, char* name, int value);
+void SH_SetUniform1f(Shader* shader, char* name, float value);
 void SH_SetUniform4f(Shader* shader, char* name, float v0, float v1, float v2, float v3);
 int SH_GetUniformLocation(Shader* shader, char* name);
 unsigned int SH_CreateShader(const char* vertexShader, const char* fragmentShader);
