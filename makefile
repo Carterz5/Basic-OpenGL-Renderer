@@ -11,10 +11,10 @@ BUILD_DIR = build
 BIN_DIR = bin
 
 # Source files
-SRCS = $(SRC_DIR)/main.c $(SRC_DIR)/indexbuffer.c $(SRC_DIR)/renderer.c $(SRC_DIR)/shader.c $(SRC_DIR)/vertexarray.c $(SRC_DIR)/vertexbuffer.c $(SRC_DIR)/vertexbufferlayout.c $(SRC_DIR)/texture.c $(SRC_DIR)/stb_ds.c $(SRC_DIR)/stb_image.c
+SRCS = $(shell find $(SRC_DIR) -name '*.c')
 
 # Object files (build directory + source file name with .o extension)
-OBJS = $(SRCS:$(SRC_DIR)/%.c=$(BUILD_DIR)/%.o)
+OBJS = $(patsubst $(SRC_DIR)/%.c, $(BUILD_DIR)/%.o, $(SRCS))
 
 # Detect the operating system
 ifeq ($(OS), Windows_NT)

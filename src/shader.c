@@ -6,6 +6,7 @@
 
 
 
+
 void SH_Construct(Shader* shader, char* filepath){
     shader->filepath = filepath;
     shader->RendererID = 0;
@@ -51,6 +52,12 @@ void SH_SetUniform1i(Shader* shader, char* name, int value){
 void SH_SetUniform1f(Shader* shader, char* name, float value){
 
     GLCall(glUniform1f(SH_GetUniformLocation(shader, name), value));
+
+};
+
+void SH_SetUniformMat4f(Shader* shader, char* name, mat4 matrix){
+
+    GLCall(glUniformMatrix4fv(SH_GetUniformLocation(shader, name), 1, GL_FALSE, &matrix[0][0]));
 
 };
 

@@ -12,6 +12,8 @@
 #include "vertexbuffer.h"
 #include "vertexbufferlayout.h"
 #include "texture.h"
+#include "cglm/cglm.h"
+#include "cglm/mat4.h"
 
 
 
@@ -49,10 +51,10 @@ int main(void)
     printf("GL version is |%s|\n", glversion);
 
     float positions[] = {
-        -0.5f, -0.5f, 0.0f, 0.0f, // 0
-         0.5f, -0.5f, 1.0f, 0.0f, // 1
-         0.5f,  0.5f, 1.0f, 1.0f, // 2
-        -0.5f,  0.5f, 0.0f, 1.0f, // 3
+        100.0f, 100.0f, 0.0f, 0.0f, // 0
+        200.0f, 100.0f, 1.0f, 0.0f, // 1
+        200.0f, 200.0f, 1.0f, 1.0f, // 2
+        100.0f, 200.0f, 0.0f, 1.0f, // 3
     };
 
     unsigned int indices[] = {
@@ -81,10 +83,33 @@ int main(void)
     IndexBuffer ib;
     IB_Construct(indices, 6, &ib);
 
+
+    mat4 proj;
+    glm_ortho(0.0f, 1024.0f, 0.0f, 768.0f, -1.0f, 1.0f, proj);
+
+    mat4 view;
+    glm_mat4_identity(view);
+    vec3 viewtranslation = {-100.f, 0.0f, 0.0f};
+    glm_translate(view, viewtranslation);
+
+
+    mat4 model;
+    glm_mat4_identity(model);
+    vec3 modeltranslation = {200, 200, 0};
+    glm_translate(model, modeltranslation);
+
+
+    mat4 mvp;
+    mat4 temp;
+    glm_mat4_mul(proj, view, temp);
+    glm_mat4_mul(temp, model, mvp);
+
+
     Shader shader;
     SH_Construct(&shader,"../res/shaders/Basic.shader");
     SH_Bind(&shader);
     SH_SetUniform4f(&shader, "u_Color", 0.2f, 0.3f, 0.8f, 1.0f);
+    SH_SetUniformMat4f(&shader, "u_MVP", mvp);
 
     Texture texture;
     TX_Construct("../res/textures/C.png", &texture);
