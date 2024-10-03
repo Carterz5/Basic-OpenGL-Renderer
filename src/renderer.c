@@ -1,6 +1,7 @@
 #include "renderer.h"
 #include <stdbool.h>
 #include <stdio.h>
+#include "texture.h"
 
 
 
@@ -21,11 +22,12 @@ bool GLLogCall(const char* function, const char* file, int line){
 
 
 
-void R_Draw(VertexArray* va, IndexBuffer* ib, Shader* shader){
+void R_Draw(VertexArray* va, IndexBuffer* ib, Shader* shader, Texture* texture){
 
     SH_Bind(shader);
     VA_Bind(va);
     IB_Bind(ib);
+    TX_Bind(0, texture);
 
     GLCall(glDrawElements(GL_TRIANGLES, ib->Count, GL_UNSIGNED_INT, NULL));
 

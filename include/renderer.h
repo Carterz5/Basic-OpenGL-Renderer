@@ -9,6 +9,7 @@
 #include "vertexarray.h"
 #include "vertexbuffer.h"
 #include "vertexbufferlayout.h"
+#include "texture.h"
 
 
 
@@ -22,7 +23,7 @@
 void GLClearError();
 bool GLLogCall(const char* function, const char* file, int line);
 
-void R_Draw(VertexArray* va, IndexBuffer* ib, Shader* shader);
+void R_Draw(VertexArray* va, IndexBuffer* ib, Shader* shader, Texture* texture);
 void R_Clear();
 
 #endif

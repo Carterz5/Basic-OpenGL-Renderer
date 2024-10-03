@@ -44,25 +44,25 @@ void SH_Unbind(){
 };
 
 void SH_SetUniform1i(Shader* shader, char* name, int value){
-
+    SH_Bind(shader);
     GLCall(glUniform1i(SH_GetUniformLocation(shader, name), value));
 
 };
 
 void SH_SetUniform1f(Shader* shader, char* name, float value){
-
+    SH_Bind(shader);
     GLCall(glUniform1f(SH_GetUniformLocation(shader, name), value));
 
 };
 
 void SH_SetUniformMat4f(Shader* shader, char* name, mat4 matrix){
-
+    SH_Bind(shader);
     GLCall(glUniformMatrix4fv(SH_GetUniformLocation(shader, name), 1, GL_FALSE, &matrix[0][0]));
 
 };
 
 void SH_SetUniform4f(Shader* shader, char* name, float v0, float v1, float v2, float v3){
-
+    SH_Bind(shader);
     GLCall(glUniform4f(SH_GetUniformLocation(shader, name), v0, v1, v2, v3));
 
 };
