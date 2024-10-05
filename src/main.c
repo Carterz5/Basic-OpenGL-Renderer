@@ -5,6 +5,7 @@
 #include <signal.h>
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
+#include <time.h>
 #include "renderer.h"
 #include "shader.h"
 #include "indexbuffer.h"
@@ -80,10 +81,10 @@ int main(void){
 
 
     float positions[] = {
-          0.0f,   0.0f, 0.0f, 0.0f, // 0
-        100.0f,   0.0f, 1.0f, 0.0f, // 1
-        100.0f, 100.0f, 1.0f, 1.0f, // 2
-          0.0f, 100.0f, 0.0f, 1.0f, // 3
+        -50.0f,  -50.0f, 0.0f, 0.0f, // 0
+         50.0f,  -50.0f, 1.0f, 0.0f, // 1
+         50.0f,   50.0f, 1.0f, 1.0f, // 2
+        -50.0f,   50.0f, 0.0f, 1.0f, // 3
     };
 
     unsigned int indices[] = {
@@ -124,12 +125,15 @@ int main(void){
 
     mat4 model;
     glm_mat4_identity(model);
-    vec3 modeltranslation = {1.0f, 1.0f, 0.0f};
-    glm_translate(model, modeltranslation);
+    vec3 modeltranslationA = {0.0f, 0.0f, 0.0f};
+    vec3 modeltranslationB = {400.0f, 200.0f, 0.0f};
+    glm_translate(model, modeltranslationA);
 
 
-    float modelx = 200.0f;
-    float modely = 200.0f;
+    float modelxA = 200.0f;
+    float modelyA = 200.0f;
+    float modelxB = 400.0f;
+    float modelyB = 200.0f;
 
     mat4 mvp;
     mat4 temp;
@@ -140,7 +144,7 @@ int main(void){
     Shader shader;
     SH_Construct(&shader,"../res/shaders/Basic.shader");
     SH_Bind(&shader);
-    //SH_SetUniform4f(&shader, "u_Color", 0.2f, 0.3f, 0.8f, 1.0f);
+
     SH_SetUniformMat4f(&shader, "u_MVP", mvp);
     
 
@@ -155,7 +159,8 @@ int main(void){
     VB_Unbind();
     IB_Unbind();
 
-
+    clock_t current_ticks, delta_ticks;
+    clock_t fps = 0;
     float r = 0.0f;
     float increment = 0.05f;
     double lasttime = glfwGetTime();
@@ -163,7 +168,7 @@ int main(void){
     while (!glfwWindowShouldClose(window))
     {
         /* Render here */
-
+        current_ticks = clock();
         //Different way to limit framerate than Cherno. glfwSwapInterval was not working on virtual machine.
         while (glfwGetTime() < lasttime + 1.0/TARGET_FPS) {
 
@@ -181,29 +186,25 @@ int main(void){
             NK_WINDOW_BORDER|NK_WINDOW_MOVABLE|NK_WINDOW_SCALABLE|
             NK_WINDOW_MINIMIZABLE|NK_WINDOW_TITLE))
         {
-            enum {EASY, HARD};
-            static int op = EASY;
-            static int property = 20;
-            nk_layout_row_static(ctx, 30, 80, 1);
-            if (nk_button_label(ctx, "button")){
-                fprintf(stdout, "button pressed\n");
-                printf("modelx is %f\n", modelx);
-            }
-            nk_layout_row_dynamic(ctx, 30, 2);
-            if (nk_option_label(ctx, "easy", op == EASY)) op = EASY;
-            if (nk_option_label(ctx, "hard", op == HARD)) op = HARD;
-
-            nk_layout_row_dynamic(ctx, 25, 1);
-            nk_property_int(ctx, "Compression:", 0, &property, 100, 10, 1);
 
             nk_layout_row_dynamic(ctx, 20, 1);
-            nk_label(ctx, "X axis", NK_TEXT_LEFT);
+            nk_label(ctx, "A X axis", NK_TEXT_LEFT);
             nk_layout_row_dynamic(ctx, 25, 1);
-            nk_slider_float(ctx, 1.0f, &modelx, 1024.0f, 1.0f);
+            nk_slider_float(ctx, 1.0f, &modelxA, 1024.0f, 1.0f);
             nk_layout_row_dynamic(ctx, 20, 1);
-            nk_label(ctx, "Y axis", NK_TEXT_LEFT);
+            nk_label(ctx, "A Y axis", NK_TEXT_LEFT);
             nk_layout_row_dynamic(ctx, 25, 1);
-            nk_slider_float(ctx, 1.0f, &modely, 768.0f, 1.0f);
+            nk_slider_float(ctx, 1.0f, &modelyA, 768.0f, 1.0f);
+            nk_layout_row_dynamic(ctx, 20, 1);
+            nk_label(ctx, "B X axis", NK_TEXT_LEFT);
+            nk_layout_row_dynamic(ctx, 25, 1);
+            nk_slider_float(ctx, 1.0f, &modelxB, 1024.0f, 1.0f);
+            nk_layout_row_dynamic(ctx, 20, 1);
+            nk_label(ctx, "B Y axis", NK_TEXT_LEFT);
+            nk_layout_row_dynamic(ctx, 25, 1);
+            nk_slider_float(ctx, 1.0f, &modelyB, 768.0f, 1.0f);
+            nk_layout_row_dynamic(ctx, 25, 1);
+            nk_labelf(ctx, NK_TEXT_LEFT, "FPS: %ld", fps);
 
         }
         nk_end(ctx);
@@ -211,18 +212,25 @@ int main(void){
         R_Clear();
         glClearColor(bg.r, bg.g, bg.b, bg.a);
 
+        SH_Bind(&shader);
 
-        modeltranslation[0] = modelx;
-        modeltranslation[1] = modely;
+        modeltranslationA[0] = modelxA;
+        modeltranslationA[1] = modelyA;
+
+        modeltranslationB[0] = modelxB;
+        modeltranslationB[1] = modelyB;
 
         glm_mat4_identity(model);
-        glm_translate(model, modeltranslation);
+        glm_translate(model, modeltranslationA);
         glm_mat4_mul(temp, model, mvp);
-
-        SH_Bind(&shader);
         SH_SetUniformMat4f(&shader, "u_MVP", mvp);
+        R_Draw(&va, &ib, &shader, &texture);
 
 
+        glm_mat4_identity(model);
+        glm_translate(model, modeltranslationB);
+        glm_mat4_mul(temp, model, mvp);
+        SH_SetUniformMat4f(&shader, "u_MVP", mvp);
         R_Draw(&va, &ib, &shader, &texture);
 
         if (r > 1.0f){
@@ -251,6 +259,13 @@ int main(void){
 
         /* Swap front and back buffers */
         glfwSwapBuffers(window);
+
+
+        delta_ticks = clock() - current_ticks; // the time it took to render the scene
+            if (delta_ticks > 0){
+                fps = CLOCKS_PER_SEC / delta_ticks;
+            };
+        
     }
 
     //GLCall(glDeleteProgram(shader));
