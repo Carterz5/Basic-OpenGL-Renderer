@@ -158,9 +158,10 @@ int main(void){
     SH_Unbind();
     VB_Unbind();
     IB_Unbind();
-
+    GLCall(glfwSwapInterval(1));
     clock_t current_ticks, delta_ticks;
     clock_t fps = 0;
+    unsigned int loop_ticks = 0;
     float r = 0.0f;
     float increment = 0.05f;
     double lasttime = glfwGetTime();
@@ -182,7 +183,7 @@ int main(void){
         nk_glfw3_new_frame(&glfw);
 
         /* GUI */
-        if (nk_begin(ctx, "Demo", nk_rect(50, 50, 230, 250),
+        if (nk_begin(ctx, "Demo", nk_rect(50, 50, 230, 300),
             NK_WINDOW_BORDER|NK_WINDOW_MOVABLE|NK_WINDOW_SCALABLE|
             NK_WINDOW_MINIMIZABLE|NK_WINDOW_TITLE))
         {
@@ -262,9 +263,13 @@ int main(void){
 
 
         delta_ticks = clock() - current_ticks; // the time it took to render the scene
-            if (delta_ticks > 0){
+            if (loop_ticks == 20){
                 fps = CLOCKS_PER_SEC / delta_ticks;
             };
+        loop_ticks++;
+        if(loop_ticks > 60){
+            loop_ticks = 0;
+        }
         
     }
 
