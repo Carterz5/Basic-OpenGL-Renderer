@@ -20,10 +20,29 @@
     x;\
     ASSERT(GLLogCall(#x, __FILE__, __LINE__))
 
+
+
+typedef struct Vertex {
+    float Position[3];
+    float Color[4];
+    float TexCoords[2];
+    float TexID;
+
+} Vertex;
+
+typedef struct Quad {
+    Vertex v0;
+    Vertex v1;
+    Vertex v2;
+    Vertex v3;
+
+} Quad;
+
 void GLClearError();
 bool GLLogCall(const char* function, const char* file, int line);
+void R_CreateQuad(Quad* quad, float x, float y, float textureID, float r, float g, float b, float a, float size);
 
-void R_Draw(VertexArray* va, IndexBuffer* ib, Shader* shader, Texture* texture);
+void R_Draw(VertexArray* va, IndexBuffer* ib, Shader* shader);
 void R_Clear();
 
 #endif

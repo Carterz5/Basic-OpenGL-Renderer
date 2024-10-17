@@ -30,6 +30,7 @@ void SH_Destruct(Shader* shader);
 void SH_Bind(Shader* shader);
 void SH_Unbind();
 void SH_SetUniform1i(Shader* shader, char* name, int value);
+void SH_SetUniform1iv(Shader* shader, char* name, unsigned int count, int value[]);
 void SH_SetUniform1f(Shader* shader, char* name, float value);
 void SH_SetUniformMat4f(Shader* shader, char* name, mat4 matrix);
 void SH_SetUniform4f(Shader* shader, char* name, float v0, float v1, float v2, float v3);

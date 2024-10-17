@@ -35,6 +35,38 @@
 #define MAX_ELEMENT_BUFFER 128 * 1024
 
 
+
+
+void printVertex(const Vertex* v) {
+    printf("Position: [%.2f, %.2f, %.2f]\n", v->Position[0], v->Position[1], v->Position[2]);
+    printf("Color: [%.2f, %.2f, %.2f, %.2f]\n", v->Color[0], v->Color[1], v->Color[2], v->Color[3]);
+    printf("TexCoords: [%.2f, %.2f]\n", v->TexCoords[0], v->TexCoords[1]);
+    printf("TexID: %.2f\n", v->TexID);
+}
+
+void printQuad(const Quad* quad) {
+    printf("Vertex 0:\n");
+    printVertex(&quad->v0);
+    printf("\n");
+
+    printf("Vertex 1:\n");
+    printVertex(&quad->v1);
+    printf("\n");
+
+    printf("Vertex 2:\n");
+    printVertex(&quad->v2);
+    printf("\n");
+
+    printf("Vertex 3:\n");
+    printVertex(&quad->v3);
+    printf("\n");
+}
+
+
+
+
+
+
 int main(void){
 
     struct nk_glfw glfw = {0};
@@ -48,8 +80,8 @@ int main(void){
         return -1;
 
 
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 5);
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
 
@@ -92,9 +124,70 @@ int main(void){
         2, 3, 0
 
     };
+
+    unsigned int BatchIndices[12];
+    IB_Populate(2, BatchIndices, 12);
+    // printf ("Batch indices is ");
+    // for (int i = 0; i < 1500; i++){
+    //     printf("%d, ", BatchIndices[i]);
+    // }
+    // printf ("\n");
+
     GLCall(glEnable(GL_BLEND));
     GLCall(glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA));
 
+    // BATCHING
+    VertexArray vabatch;
+    VA_Construct(&vabatch);
+
+    VertexBuffer vbbatch;
+    VB_Construct_Batch(sizeof(Vertex) * 8, &vbbatch);
+    //Quad boxes[2];
+    Quad box1;
+    Quad box2;
+
+
+    R_CreateQuad(&box1, -0.5f, -0.5f, 1.0f, 0.5f, 0.0f, 0.0f, 1.0f, 0.5f);
+    R_CreateQuad(&box2, 0.5f, 0.5f, 2.0f, 0.5f, 0.0f, 0.0f, 1.0f, 0.5f);
+    printQuad(&box1);
+
+    VB_AddToBatch(&vbbatch, sizeof(Quad), &box1);
+    VB_AddToBatch(&vbbatch, sizeof(Quad), &box2);
+
+    VertexBufferLayout vblbatch;
+    VBL_Construct(&vblbatch);
+    VBL_Pushfloat(3, &vblbatch);
+    VBL_Pushfloat(4, &vblbatch);
+    VBL_Pushfloat(2, &vblbatch);
+    VBL_Pushfloat(1, &vblbatch);
+    VA_AddBuffer(&vbbatch, &vblbatch, &vabatch);
+    
+    IndexBuffer ibbatch;
+    
+    IB_Construct(BatchIndices, 12, &ibbatch);
+
+
+    Shader batchshader;
+    SH_Construct(&batchshader,"../res/shaders/Batch.glsl");
+    SH_Bind(&batchshader);
+
+
+    
+
+    Texture Wtexture;
+    Texture Ctexture;
+    TX_Construct("../res/textures/W.png", &Wtexture);
+    TX_Construct("../res/textures/C.png", &Ctexture);
+    TX_Bind(2, &Wtexture);
+    TX_Bind(1, &Ctexture);
+    //int samplers[32] = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31};
+    int samplers[3] = {0, 1, 2};
+    SH_SetUniform1iv(&batchshader, "u_Textures", 3, samplers);
+
+
+    
+
+    // OLD NON BATCH DRAWING
     VertexArray va;
     VA_Construct(&va);
 
@@ -142,7 +235,7 @@ int main(void){
 
 
     Shader shader;
-    SH_Construct(&shader,"../res/shaders/Basic.shader");
+    SH_Construct(&shader,"../res/shaders/Basic.glsl");
     SH_Bind(&shader);
 
     SH_SetUniformMat4f(&shader, "u_MVP", mvp);
@@ -154,7 +247,7 @@ int main(void){
     SH_SetUniform1i(&shader, "u_Texture", 0);
 
 
-    VA_Unbind(&va);
+    VA_Unbind();
     SH_Unbind();
     VB_Unbind();
     IB_Unbind();
@@ -209,11 +302,11 @@ int main(void){
 
         }
         nk_end(ctx);
-
         R_Clear();
         glClearColor(bg.r, bg.g, bg.b, bg.a);
 
         SH_Bind(&shader);
+        TX_Bind(0, &texture);
 
         modeltranslationA[0] = modelxA;
         modeltranslationA[1] = modelyA;
@@ -225,14 +318,20 @@ int main(void){
         glm_translate(model, modeltranslationA);
         glm_mat4_mul(temp, model, mvp);
         SH_SetUniformMat4f(&shader, "u_MVP", mvp);
-        R_Draw(&va, &ib, &shader, &texture);
+        R_Draw(&va, &ib, &shader);
 
 
         glm_mat4_identity(model);
         glm_translate(model, modeltranslationB);
         glm_mat4_mul(temp, model, mvp);
         SH_SetUniformMat4f(&shader, "u_MVP", mvp);
-        R_Draw(&va, &ib, &shader, &texture);
+
+        R_Draw(&va, &ib, &shader);
+
+        SH_Bind(&batchshader);
+        TX_Bind(1, &Ctexture);
+        TX_Bind(2, &Wtexture);
+        R_Draw(&vabatch, &ibbatch, &batchshader);
 
         if (r > 1.0f){
             increment = -0.05f;
